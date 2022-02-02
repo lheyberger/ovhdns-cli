@@ -14,6 +14,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 ####
 if [ ! -d ${VIRTUAL_ENV} ] ; then
     python3 -m venv ${VIRTUAL_ENV} 2>&1 >/dev/null
+    ${VIRTUAL_ENV}/bin/python -m pip install --upgrade pip 2>&1 >/dev/null
 fi
 
 ####
