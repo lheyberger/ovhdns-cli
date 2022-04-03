@@ -73,9 +73,10 @@ def list(domain, processes, limit):
 @main.command()
 @click.argument('address')
 @click.option('--localcopy/--no-localcopy', default=False, help='Keep local copy')
-def add(address, localcopy):
+@click.option('--pattern', default=MAIL_PATTERN, type=str)
+def add(address, localcopy, pattern):
     subdomain, domain = address.split('@')
-    redirection = MAIL_PATTERN.format(''.join(filter(str.isalnum, subdomain)))
+    redirection = pattern.format(''.join(filter(str.isalnum, subdomain)))
     result = client.post(f'/email/domain/{domain}/redirection', **{'from':address, 'to':redirection, 'localCopy':localcopy})
     print(json.dumps(result, indent=4))
 
