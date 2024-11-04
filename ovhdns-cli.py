@@ -30,7 +30,14 @@ client = ovh.Client(
 
 def get_redirection_infos(redirection):
     domain, redirection_id = redirection
-    return client.get(f'/email/domain/{domain}/redirection/{redirection_id}')
+    try:
+        return client.get(f"/email/domain/{domain}/redirection/{redirection_id}")
+    except:
+        return {
+            'id': redirection_id,
+            'from': '❌',
+            'to': '❌',
+        }
 
 
 def display_results(redirections):
@@ -54,7 +61,7 @@ def great():
 @click.option('--processes', default=10, help='Number of processes')
 @click.option('--limit', default=5000, help='Limits the number of redirections')
 def list(domain, processes, limit):
-    redirections = client.get(f'/email/domain/{domain}/redirection')
+    redirections = client.get(f"/email/domain/{domain}/redirection")
     redirections = redirections[:limit]
     total = len(redirections)
 
@@ -77,7 +84,11 @@ def list(domain, processes, limit):
 def add(address, localcopy, pattern):
     subdomain, domain = address.split('@')
     redirection = pattern.format(''.join(filter(str.isalnum, subdomain)))
-    result = client.post(f'/email/domain/{domain}/redirection', **{'from':address, 'to':redirection, 'localCopy':localcopy})
+    result = client.post(f"/email/domain/{domain}/redirection",
+        _from=address,
+        to=redirection,
+        localCopy=localcopy,
+    )
     print(json.dumps(result, indent=4))
 
 
@@ -85,7 +96,7 @@ def add(address, localcopy, pattern):
 @click.argument('domain')
 @click.argument('id')
 def delete(domain, id):
-    result = client.delete(f'/email/domain/{domain}/redirection/{id}')
+    result = client.delete(f"/email/domain/{domain}/redirection/{id}")
     print(json.dumps(result, indent=4))
 
 
@@ -93,7 +104,7 @@ def delete(domain, id):
 @click.argument('domain')
 @click.argument('id')
 def info(domain, id):
-    result = client.get(f'/email/domain/{domain}/redirection/{id}')
+    result = client.get(f"/email/domain/{domain}/redirection/{id}")
     print(json.dumps(result, indent=4))
 
 
