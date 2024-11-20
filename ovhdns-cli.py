@@ -84,11 +84,11 @@ def list(domain, processes, limit):
 def add(address, localcopy, pattern):
     subdomain, domain = address.split('@')
     redirection = pattern.format(''.join(filter(str.isalnum, subdomain)))
-    result = client.post(f"/email/domain/{domain}/redirection",
-        _from=address,
-        to=redirection,
-        localCopy=localcopy,
-    )
+    result = client.post(f"/email/domain/{domain}/redirection", **{
+        '_from':address,
+        'to':redirection,
+        'localCopy':localcopy,
+    })
     print(json.dumps(result, indent=4))
 
 
