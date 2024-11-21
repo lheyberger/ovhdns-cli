@@ -28,9 +28,11 @@ fi
 # Set environment variables if any
 ####
 for file in .env*; do
-    if [ -f ${file} ] ; then
-        source ${file}
-    fi
+    if [ -f "${file}" ]; then
+        set -o allexport
+        source "${file}"
+        set +o allexport
+    fi;
 done
 
 ####
