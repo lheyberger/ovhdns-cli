@@ -75,26 +75,35 @@ def great():
 @main.command(name='list')
 @click.argument('domain')
 @click.option('--processes', default=10, help='Number of processes')
-@click.option('--limit', default=5000, help='Limits the number of redirections')
-def list_redirections(domain, processes, limit):
+def list_redirections(domain, processes):
+
+    redirections = client.get(f"/email/domain/{domain}/redirection")
+    redirections = set(redirections)
+    print(f"{len(redirections)} redirections received from API")
 
     cached_redirections = load_cache()
     cached_redirection_ids = set(cached_redirections.keys())
+    print(f"{len(cached_redirection_ids)} redirections in cache")
 
-    redirections = client.get(f"/email/domain/{domain}/redirection")
-    redirections = take(limit, redirections)
-    redirections = (r for r in redirections if r not in cached_redirection_ids)
+    redirections_to_remove = cached_redirection_ids - redirections
+    print(f"{len(redirections_to_remove)} redirections to remove from cache")
+    for redirection_id in redirections_to_remove:
+        cached_redirections.pop(redirection_id, None)
+    cached_redirection_ids = set(cached_redirections.keys())
+
+    redirections = redirections - cached_redirection_ids
     redirections = ((domain, r) for r in redirections)
     redirections = list(redirections)
+    print(f"{len(redirections)} redirections missing in cache")
 
-    total = len(redirections)
     results = list(cached_redirections.values())
-    with Pool(processes=processes) as pool:
-        for result in tqdm(pool.imap_unordered(get_redirection_infos, redirections), total=total):
-            results.append(result)
-            cached_redirections[result['id']] = result
-        pool.close()
-        pool.join()
+    if redirections:
+        with Pool(processes=processes) as pool:
+            for result in tqdm(pool.imap_unordered(get_redirection_infos, redirections), total=len(redirections)):
+                results.append(result)
+                cached_redirections[result['id']] = result
+            pool.close()
+            pool.join()
 
     save_cache(cached_redirections)
     display_results(results)
