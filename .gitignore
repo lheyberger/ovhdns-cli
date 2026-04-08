@@ -1,3 +1,5 @@
 __pycache__/
 .venv/
-.env.secret*
+.envrc
+.envrc.d/
+cache.json
