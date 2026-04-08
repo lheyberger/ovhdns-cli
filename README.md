@@ -49,20 +49,21 @@ Head over to [https://api.ovh.com](https://api.ovh.com) to obtain the following 
 - [tabulate](https://pypi.org/project/tabulate/)
 - [tqdm](https://pypi.org/project/tqdm/)
 
-You don't need to manually install them, this is done when executing `./ovhdns-cli.sh`
+`ovhdns-cli` runs well if you have [uv](https://docs.astral.sh/uv/) installed.
 
 
 ## Configuration
 
-Replace the required OVH API credentials and environment variables in `.env.secret`:
+`ovhdns-cli` requires the following env variables to be set:
 
 ```Shell
+export OVH_ENDPOINT=ovh-eu
 export OVH_APPLICATION_KEY=OVH_APPLICATION_KEY
 export OVH_APPLICATION_SECRET=OVH_APPLICATION_SECRET
 export OVH_CONSUMER_KEY=OVH_CONSUMER_KEY
 ```
 
-Set the `MAIL_PATTERN` according to your needs.
+You also need a default `MAIL_PATTERN` env variable.
 
 Redirecting to a gmail account:
 ```Shell
@@ -77,10 +78,10 @@ export MAIL_PATTERN=my_account+{}@protonmail.com
 
 ## Usage
 
-Run the script by executing `./ovhdns-cli.sh`:
+Run the script by executing it directly `./ovhdns-cli.py`, or `uv run ovhdns-cli.py`:
 
 ```Shell
-$ ./ovhdns-cli.sh --help
+$ ./ovhdns-cli.py --help
 Usage: ovhdns-cli.py [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -100,7 +101,7 @@ Commands:
 Validates your credentials by calling the OVH API.
 
 ```Shell
-$ ./ovhdns-cli.sh great
+./ovhdns-cli.py great
 ```
 
 
@@ -109,13 +110,13 @@ $ ./ovhdns-cli.sh great
 List and [cache](#caching) all redirections for a given domain:
 
 ```Shell
-$ ./ovhdns-cli.sh list your_domain.com
+./ovhdns-cli.py list your_domain.com
 ```
 
 This command takes an optional number of processes to use for parallel data fetching (default: 10).
 
 ```Shell
-$ ./ovhdns-cli.sh list your_domain.com --processes 5
+./ovhdns-cli.pyh list your_domain.com --processes 5
 ```
 
 
@@ -124,19 +125,19 @@ $ ./ovhdns-cli.sh list your_domain.com --processes 5
 Add a new email redirection:
 
 ```Shell
-$ ./ovhdns-cli.sh add redirection_name@your_domain.com
+./ovhdns-cli.py add redirection_name@your_domain.com
 ```
 
 This command takes an optional argument `--localcopy` to keep a local copy of emails (default: `--no-localcopy`).
 
 ```Shell
-$ ./ovhdns-cli.sh add redirection_name@your_domain.com --localcopy
+./ovhdns-cli.py add redirection_name@your_domain.com --localcopy
 ```
 
 This command takes an optional argument `--pattern` to override the MAIL_PATTERN environment variable.
 
 ```Shell
-$ ./ovhdns-cli.sh add redirection_name@your_domain.com --pattern 'my_account+{}@another_mail_provider.com'
+./ovhdns-cli.py add redirection_name@your_domain.com --pattern 'my_account+{}@another_mail_provider.com'
 ```
 
 
@@ -145,7 +146,7 @@ $ ./ovhdns-cli.sh add redirection_name@your_domain.com --pattern 'my_account+{}@
 Delete a redirection by its ID:
 
 ```Shell
-./ovhdns-cli.sh delete your_domain.com [ID]
+./ovhdns-cli.py delete your_domain.com [ID]
 ```
 
 > [!TIP]
@@ -157,7 +158,7 @@ Delete a redirection by its ID:
 Retrieve information about a specific redirection:
 
 ```Shell
-./ovhdns-cli.sh info your_domain.com [ID]
+./ovhdns-cli.py info your_domain.com [ID]
 ```
 
 
