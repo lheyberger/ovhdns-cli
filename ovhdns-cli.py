@@ -1,5 +1,15 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/usr/bin/env uv run
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#   "click==8.3.2",
+#   "more-itertools==11.0.1",
+#   "ovh==1.2.0",
+#   "tabulate==0.10.0",
+#   "tqdm==4.67.3",
+#   "urllib3==2.6.3",
+# ]
+# ///
 
 import ovh
 import json
